@@ -31,6 +31,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# change user model
+AUTH_USER_MODEL = 'users.UserProfile'
+
 
 # Application definition
 
