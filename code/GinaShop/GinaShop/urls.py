@@ -17,23 +17,37 @@ from django.conf.urls import url, include
 from GinaShop.settings import MEDIA_ROOT
 from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
-# from django.contrib import admin
+from rest_framework.authtoken import views
+
 import xadmin
 from rest_framework.routers import DefaultRouter
-from goods.views import GoodsListViewSet
+from goods.views import *
+
 router = DefaultRouter()
 
 # config goods url
-router.register(r'goods',GoodsListViewSet)
+router.register(r'goods', GoodsListViewSet, base_name="goods")
 
+# config categorys url
+router.register(r'categorys', CategoryViewSet, base_name="categorys")
+
+# hot search url
+router.register(r'hotsearchs', HotSearchsViewset, base_name="hotsearchs")
+
+goods_list = GoodsListViewSet.as_view({
+    'get': 'list',
+})
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
 
-    url(r'^',include(router.urls)),
+    url(r'^', include(router.urls)),
 
     # 文档查询
-    url(r'docs/', include_docs_urls(title="GinaShop"))
+    url(r'docs/', include_docs_urls(title="GinaShop")),
+
+    # token获取接口
+    url(r'^api-token-auth/', views.obtain_auth_token)
 ]
